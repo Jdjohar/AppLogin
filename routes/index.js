@@ -278,14 +278,13 @@ router.get("/api/v1/verify", async (req, res) => {
 }
 
 });
-
 // Student Signup API
-router.post("/api/v1/scholarship/signup", async (req, res, next) => {
+router.post("/api/v1/applogin/signup", async (req, res, next) => {
   let signinwith = "Email"
-  let {name,email,password,mobilenumber} = req.body;
+  let {name,email,password,mobile, emailverify} = req.body;
 
   let hashedpassword = await bcrypt.hash(password, 10);
-  const results = await db.query(`SELECT * FROM students WHERE stuemail = $1`, [email]);
+  const results = await db.query(`SELECT * FROM login_users WHERE useremail = $1`, [email]);
   if(results.rows.length > 0){
     res.status(200).json({
       status: "failed",
@@ -293,11 +292,11 @@ router.post("/api/v1/scholarship/signup", async (req, res, next) => {
     })
   } else {
     const newUser = await db.query(
-      `INSERT INTO students(stuname, stuemail, lgpassword,loginwith,stumobile )
-      VALUES($1, $2, $3, $4, $5) RETURNING id
-      `, [name, email, hashedpassword, signinwith,mobilenumber]
+      `INSERT INTO login_users(username, useremail, userpassword,userloginwith,usermobile,emailverify)
+      VALUES($1, $2, $3, $4,$5,$6) RETURNING id
+      `, [name, email, hashedpassword, signinwith,mobile, emailverify]
     )
-    console.log(newUser,"New User");
+    console.log(newUser,"New User Added!");
     const lastid = newUser.rows[0].id
     if(lastid > 0)
     {
@@ -308,15 +307,15 @@ router.post("/api/v1/scholarship/signup", async (req, res, next) => {
       var transporter = nodemailer.createTransport({
         service: "Gmail",
         auth: {
-            user: "manavsingh839@gmail.com",
-            pass: "ecxfsoqsccsygakb"
+            user: "jdeep514@gmail.com",
+            pass: "snbkzokkzxuqghxi"
         }
      });
 
      let info = await transporter.sendMail({
-      from: '"Nishkam 👻" <manavsingh839@gmail.com>', // sender address
+      from: '"Login App 👻" <jdeep514@gmail.com>', // sender address
       to: `${email}`, // list of receivers
-      subject: "Verification Email - Nishkam", // Subject line
+      subject: "Verification Email - Login App", // Subject line
       // text: `Hello ${results.rows[0].name}, Your New Password is ${hashedemail}`, // plain text body
       html: ` <!DOCTYPE html>
 
@@ -329,7 +328,7 @@ router.post("/api/v1/scholarship/signup", async (req, res, next) => {
       <body style="background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
       <div style="font-size: 14px; mso-line-height-alt: 16.8px; color: #8d8a8a; line-height: 1.2; font-family: Arial, Helvetica Neue, Helvetica, sans-serif;">
 <p style="margin: 0; font-size: 14px;"><span style="">Dear `+name+`, <br/><br/>Thanks for being part of family</p>
-<a href="https://nishkamscholarship.herokuapp.com/api/v1/verify?email=`+email+`&check=`+hashedemail+`" style="text-decoration: none;" target="_blank">Verify Now</a>
+<a href="https://stormy-teal-cuttlefish.cyclic.app/api/v1/verify?email=`+email+`&check=`+hashedemail+`" style="text-decoration: none;" target="_blank">Verify Now</a>
 </div>
       </body>
       </html>` // html body
@@ -359,7 +358,6 @@ router.post("/api/v1/scholarship/signup", async (req, res, next) => {
 
 
 });
-
 
 // Normal login Scholarship
 router.post("/api/v1/scholarship/login",function(req,res,next){
