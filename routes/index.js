@@ -241,7 +241,7 @@ router.get("/icsexport",  (req, res) => {
 router.get("/api/v1/testapi", async (req, res) => {
   
   try{
-    const results = await db.query("select * from students");
+    const results = await db.query("select * from login_users");
     // console.log(results);
     res.status(200).json({
       status: "success 2",
