@@ -262,9 +262,9 @@ router.get("/api/v1/verify", async (req, res) => {
   if(!hashedpassword) {
     return res.status(401).json("Not Validate.");
 }else{
-  const results = await db.query(`SELECT * FROM students WHERE stuemail = $1`, [email]);
+  const results = await db.query(`SELECT * FROM login_users WHERE useremail = $1`, [email]);
   if(results.rows.length > 0){
-    const applicationreportresults = await db.query(`UPDATE students SET emailverify = 'verified' WHERE stuemail = $1`, [email]) ;
+    const applicationreportresults = await db.query(`UPDATE login_users SET emailverify = 'verified' WHERE stuemail = $1`, [email]) ;
     res.status(200).json({
       status: "failed",
       message:  "Email Verified Successfully"
