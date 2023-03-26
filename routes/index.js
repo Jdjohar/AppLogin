@@ -252,6 +252,21 @@ router.get("/api/v1/testapi", async (req, res) => {
     console.log(err);
   }
 });
+// Nishkam Website test API
+router.get("/api/v1/testdbapi", async (req, res) => {
+  
+  try{
+    const results = await db.query("select * from login_users");
+    console.log(results);
+    res.status(200).json({
+      status: "success 2",
+     
+    });
+
+  }catch (err) {
+    console.log(err);
+  }
+});
 
 // Student Verify API
 router.get("/api/v1/verify", async (req, res) => {
